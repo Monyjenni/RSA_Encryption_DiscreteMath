@@ -127,7 +127,7 @@ export default {
     },
     encryptMessage() {
       const message = this.message; // Get the user input message
-      const encryptedMessage = this.classicalEncrypt(message);
+      const encryptedMessage = this.classicalEncrypt(message, 10); // Use shift value of 10 for encryption
 
       // Update the encryptedMessage data property
       this.encryptedMessage = encryptedMessage;
