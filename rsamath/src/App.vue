@@ -11,70 +11,6 @@
     <v-main>
       <v-row>
         <v-col cols="4">
-          <v-subheader>Public Key</v-subheader>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col cols="4">
-          <div class="text-fields-container">
-            <v-col cols="12">
-              <v-text-field
-                label="First Index Number"
-                filled
-                rounded
-                dense
-                v-model="publicKey.e"
-                type="number"
-              ></v-text-field>
-            </v-col>
-            <v-spacer></v-spacer>
-            <v-col cols="12">
-              <v-text-field
-                label="Second Index Number"
-                filled
-                rounded
-                dense
-                v-model="publicKey.n"
-                type="number"
-              ></v-text-field>
-            </v-col>
-          </div>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col cols="4">
-          <v-subheader>Private Key</v-subheader>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col cols="4">
-          <div class="text-fields-container">
-            <v-col cols="12">
-              <v-text-field
-                label="First Index Number"
-                filled
-                rounded
-                dense
-                v-model="privateKey.d"
-                type="number"
-              ></v-text-field>
-            </v-col>
-            <v-spacer></v-spacer>
-            <v-col cols="12">
-              <v-text-field
-                label="Second Index Number"
-                filled
-                rounded
-                dense
-                v-model="privateKey.n"
-                type="number"
-              ></v-text-field>
-            </v-col>
-          </div>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col cols="4">
           <v-subheader>Original Message</v-subheader>
         </v-col>
       </v-row>
@@ -83,15 +19,20 @@
           <div class="text-fields-container">
             <v-col cols="12">
               <v-text-field
-                label="Output"
-                outlined
+                label="Original Message"
+                filled
+                rounded
                 dense
                 v-model="message"
-                type="number"
               ></v-text-field>
             </v-col>
             <v-spacer></v-spacer>
           </div>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="4">
+          <v-btn @click="encryptMessage" color="primary">Encrypt</v-btn>
         </v-col>
       </v-row>
       <v-row>
@@ -105,14 +46,19 @@
             <v-col cols="12">
               <v-text-field
                 label="Encrypted Output"
-                outlined
+                filled
+                rounded
                 dense
                 v-model="encryptedMessage"
-                type="number"
               ></v-text-field>
             </v-col>
             <v-spacer></v-spacer>
           </div>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="4">
+          <v-btn @click="decryptMessage" color="primary">Decrypt</v-btn>
         </v-col>
       </v-row>
       <v-row>
@@ -126,10 +72,10 @@
             <v-col cols="12">
               <v-text-field
                 label="Decrypted Output"
-                outlined
-                dense
+                filled
+                rounded
+                densee
                 v-model="decryptedMessage"
-                type="number"
               ></v-text-field>
             </v-col>
             <v-spacer></v-spacer>
@@ -141,49 +87,78 @@
 </template>
 
 <script>
-// Function to calculate phi(n) for a given number n
-function phi(n) {
-  // Your implementation here
-}
-
-// Function to calculate gcd(a, b) using the Euclidean algorithm
-function gcd(a, b) {
-  // Your implementation here
-}
-
-// Function to calculate a^b mod m using modular exponentiation
-function modpow(a, b, m) {
-  // Your implementation here
-}
-
-// Function to generate a random primitive root modulo n
-function generatePrimitiveRoot(n) {
-  // Your implementation here
-}
-
 export default {
   data: () => ({
     drawer: null,
-    publicKey: { e: 0, n: 0 },
-    privateKey: { d: 0, n: 0 },
-    message: 0,
-    encryptedMessage: 0,
-    decryptedMessage: 0,
+    message: '', // User input message
+    encryptedMessage: '', // Encrypted message result
+    decryptedMessage: '', // Decrypted message result
   }),
   methods: {
     encryptMessage() {
-      const m = parseInt(this.message);
-      this.encryptedMessage = modpow(m, this.publicKey.e, this.publicKey.n);
+      const message = this.message; // Get the user input message
+      const encryptedMessage = this.classicalEncrypt(message);
+
+      // Update the encryptedMessage data property
+      this.encryptedMessage = encryptedMessage;
     },
     decryptMessage() {
-      const c = parseInt(this.encryptedMessage);
-      this.decryptedMessage = modpow(c, this.privateKey.d, this.privateKey.n);
+      const encryptedMessage = this.encryptedMessage; // Get the encrypted message
+      const decryptedMessage = this.classicalDecrypt(encryptedMessage);
+
+      // Update the decryptedMessage data property
+      this.decryptedMessage = decryptedMessage;
     },
-    // Add the phi, gcd, modpow, and generatePrimitiveRoot functions here
-    phi,
-    gcd,
-    modpow,
-    generatePrimitiveRoot,
+    classicalEncrypt(message) {
+      // Perform classical encryption algorithm here
+      // For demonstration, we'll use a simple Caesar cipher
+
+      const shift = 5; // Shift value for Caesar cipher
+      let encryptedMessage = '';
+
+      for (let i = 0; i < message.length; i++) {
+        const charCode = message.charCodeAt(i);
+
+        // Encrypt each character by shifting it by the specified value
+        if (charCode >= 65 && charCode <= 90) {
+          // Uppercase letters
+          encryptedMessage += String.fromCharCode(((charCode - 65 + shift) % 26) + 65);
+        } else if (charCode >= 97 && charCode <= 122) {
+          // Lowercase letters
+          encryptedMessage += String.fromCharCode(((charCode - 97 + shift) % 26) + 97);
+        } else {
+          // Non-alphabetic characters remain unchanged
+          encryptedMessage += message[i];
+        }
+      }
+
+      return encryptedMessage;
+    },
+    classicalDecrypt(encryptedMessage) {
+      // Perform decryption to reverse the encryption algorithm
+      // For demonstration, we'll reverse the Caesar cipher
+
+      const shift = 5; // Shift value for Caesar cipher
+      let decryptedMessage = '';
+
+      for (let i = 0; i < encryptedMessage.length; i++) {
+        const charCode = encryptedMessage.charCodeAt(i);
+
+        // Decrypt each character by shifting it back by the specified value
+        if (charCode >= 65 && charCode <= 90) {
+          // Uppercase letters
+          decryptedMessage += String.fromCharCode(((charCode - 65 - shift + 26) % 26) + 65);
+        } else if (charCode >= 97 && charCode <= 122) {
+          // Lowercase letters
+          decryptedMessage += String.fromCharCode(((charCode - 97 - shift + 26) % 26) + 97);
+        } else {
+          // Non-alphabetic characters remain unchanged
+          decryptedMessage += encryptedMessage[i];
+        }
+      }
+
+      return decryptedMessage;
+    },
   },
 };
 </script>
