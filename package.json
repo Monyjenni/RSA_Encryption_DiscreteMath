@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "big-integer": "^1.6.51"
+    "big-integer": "^1.6.51",
+    "vue-router": "^4.2.4"
   }
 }
